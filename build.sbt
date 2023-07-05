@@ -13,7 +13,10 @@ lazy val root = project
       .withZone(ZoneOffset.UTC)
       .format(Instant.now()),
     scalaVersion := scala3Version,
-    libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
+    libraryDependencies ++= List(
+      "ie.nok" %% "scala-libraries" % "20230703.194230.724809283",
+      "org.scalameta" %% "munit" % "0.7.29" % Test
+    ),
     githubOwner := "nok-ie",
     githubRepository := "eircode-address-database",
     Test / publishArtifact := true
