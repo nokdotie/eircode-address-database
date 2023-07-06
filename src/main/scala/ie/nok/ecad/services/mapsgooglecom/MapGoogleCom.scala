@@ -7,9 +7,6 @@ import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData, Coordinates}
 import scala.util.chaining.scalaUtilChainingOps
 import zio.{Scope, System, ZIO, ZLayer}
 
-import org.apache.commons.text.similarity._
-import java.util.Locale
-
 object MapsGoogleCom {
 
   def live: ZLayer[Scope, Throwable, MapsGoogleCom] =
