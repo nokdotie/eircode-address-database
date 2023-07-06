@@ -3,19 +3,24 @@ package ie.nok.ecad.services
 import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData}
 import ie.nok.ecad.services.findereircodeie.FinderEircodeIe
 import ie.nok.ecad.services.mapsgooglecom.MapsGoogleCom
+import ie.nok.ecad.services.toolshousinggovie.ToolsHousingGovIe
 import scala.util.chaining.scalaUtilChainingOps
 import zio.{ZIO, ZLayer}
 
 object EircodeAddressDatabaseDataServiceImpl {
 
   val live: ZLayer[
-    FinderEircodeIe & MapsGoogleCom,
+    FinderEircodeIe & MapsGoogleCom & ToolsHousingGovIe,
     Throwable,
     EircodeAddressDatabaseDataService
   ] =
     ZLayer.fromFunction {
-      (finderEircodeIe: FinderEircodeIe, mapsGoogleCom: MapsGoogleCom) =>
-        List(finderEircodeIe, mapsGoogleCom)
+      (
+          finderEircodeIe: FinderEircodeIe,
+          mapsGoogleCom: MapsGoogleCom,
+          toolsHousingGovIe: ToolsHousingGovIe
+      ) =>
+        List(finderEircodeIe, mapsGoogleCom, toolsHousingGovIe)
           .pipe { new EircodeAddressDatabaseDataServiceImpl(_) }
     }
 

@@ -1,5 +1,6 @@
 package ie.nok.ecad.services.findereircodeie
 
+import ie.nok.http.Client
 import ie.nok.ecad.{EircodeAddressDatabaseData, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
 import ie.nok.ecad.services.findereircodeie.{
@@ -7,40 +8,34 @@ import ie.nok.ecad.services.findereircodeie.{
   GetEcadData,
   GetIdentity
 }
+import scala.util.chaining.scalaUtilChainingOps
 import zio.{ZIO, ZLayer}
 import zio.json.{JsonDecoder, DecoderOps}
-import zio.http.Client
-import scala.util.chaining.scalaUtilChainingOps
-import ie.nok.ecad.services.EircodeAddressDatabaseDataService
+import zio.http.{Client => ZioClient}
 
 object FinderEircodeIe {
-  val live: ZLayer[Client, Throwable, FinderEircodeIe] =
+  val live: ZLayer[ZioClient, Throwable, FinderEircodeIe] =
     ZLayer.fromFunction(new FinderEircodeIe(_))
 }
 
-class FinderEircodeIe(client: Client)
+class FinderEircodeIe(client: ZioClient)
     extends EircodeAddressDatabaseDataService {
-  private def request[A: JsonDecoder](url: String): ZIO[Any, Throwable, A] =
+
+  private def requestBodyAsJson[A: JsonDecoder](
+      url: String
+  ): ZIO[Any, Throwable, A] =
     Client
-      .request(url)
+      .requestBodyAsJson(url)
       .provide(ZLayer.succeed(client))
-      .flatMap { _.body.asString }
-      .flatMap { body =>
-        body
-          .fromJson[A]
-          .left
-          .map { err => Throwable(s"$err: $body") }
-          .pipe(ZIO.fromEither)
-      }
 
   override def getEircodeAddressDatabaseData(
       eircodeOrAddress: String
   ): ZIO[Any, Throwable, List[EircodeAddressDatabaseData]] = for {
     getIdentity <- GetIdentity.url
-      .pipe(request[GetIdentity.Response])
+      .pipe { requestBodyAsJson[GetIdentity.Response] }
     findAddress <- FindAddress
       .url(getIdentity.key, eircodeOrAddress)
-      .pipe(request[FindAddress.Response])
+      .pipe { requestBodyAsJson[FindAddress.Response] }
     addressIds = findAddress
       .pipe { case FindAddress.Response(addressId, addressType, options) =>
         FindAddress.ResponseOption(addressId, addressType) +: options
@@ -55,7 +50,7 @@ class FinderEircodeIe(client: Client)
         GetEcadData
           .url(getIdentity.key, _)
       }
-      .map { request[GetEcadData.Response] }
+      .map { requestBodyAsJson[GetEcadData.Response] }
       .pipe { ZIO.collectAll }
 
     res = getEcadData.flatMap { data =>
