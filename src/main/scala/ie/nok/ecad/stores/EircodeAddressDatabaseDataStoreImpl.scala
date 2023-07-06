@@ -1,21 +1,26 @@
 package ie.nok.ecad.stores
 
 import ie.nok.ecad.EircodeAddressDatabaseData
-import ie.nok.ecad.services.findereircodeie.FinderEircodeIe
+import ie.nok.ecad.services.EircodeAddressDatabaseDataService
 import zio.{ZIO, ZLayer}
+import ie.nok.ecad.stores.EircodeAddressDatabaseDataStore
 
 object EircodeAddressDatabaseDataStoreImpl {
 
-  val live
-      : ZLayer[FinderEircodeIe, Throwable, EircodeAddressDatabaseDataStore] =
+  val live: ZLayer[
+    EircodeAddressDatabaseDataService,
+    Throwable,
+    EircodeAddressDatabaseDataStore
+  ] =
     ZLayer.fromFunction(new EircodeAddressDatabaseDataStoreImpl(_))
 
 }
 
-class EircodeAddressDatabaseDataStoreImpl(finderEircodeIe: FinderEircodeIe)
-    extends EircodeAddressDatabaseDataStore {
+class EircodeAddressDatabaseDataStoreImpl(
+    finderEircodeIe: EircodeAddressDatabaseDataService
+) extends EircodeAddressDatabaseDataStore {
   def getEircodeAddressDatabaseData(
       address: String
   ): ZIO[Any, Throwable, Option[EircodeAddressDatabaseData]] =
-    finderEircodeIe.getEircodeAddressDatabaseData(address).asSome
+    finderEircodeIe.getEircodeAddressDatabaseData(address).map { _.headOption }
 }
