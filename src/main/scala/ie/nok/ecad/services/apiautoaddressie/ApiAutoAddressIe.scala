@@ -4,16 +4,19 @@ import ie.nok.http.Client
 import ie.nok.ecad.{EircodeAddressDatabaseData, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
 import ie.nok.ecad.services.apiautoaddressie.customers._
+import scala.util.Random
 import scala.util.chaining.scalaUtilChainingOps
 import zio.{ZIO, ZLayer}
 import zio.json.{JsonDecoder, DecoderOps}
 import zio.http.{Client => ZioClient}
-import ie.nok.ecad.services.apiautoaddressie.customers.Customer
 
 object ApiAutoAddressIe {
   val live: ZLayer[ZioClient, Throwable, ApiAutoAddressIe] =
     ZLayer.fromFunction(
-      new ApiAutoAddressIe(_, List(AnPostCom, FinderEircodeIe, QuoteZurichIe))
+      new ApiAutoAddressIe(
+        _,
+        List(AnPostCom, FbdIe, FinderEircodeIe, QuoteAllianzIe, QuoteZurichIe)
+      )
     )
 }
 
@@ -78,6 +81,7 @@ class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
       address: String
   ): ZIO[Any, Throwable, List[EircodeAddressDatabaseData]] =
     customers
+      .pipe { Random.shuffle }
       .map { customer => getEircodeAddressDatabaseData(customer, address) }
       .pipe {
         case Nil          => ZIO.fail(new Exception("No customers"))
