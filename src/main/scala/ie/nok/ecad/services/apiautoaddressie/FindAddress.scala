@@ -3,8 +3,15 @@ package ie.nok.ecad.services.apiautoaddressie
 import zio.json.{DeriveJsonDecoder, JsonDecoder}
 
 protected[apiautoaddressie] object FindAddress {
+  case class AddressId(value: String)
+  given JsonDecoder[AddressId] =
+    JsonDecoder.string
+      .widen[Any]
+      .orElse(JsonDecoder.int.widen[Any])
+      .map { any => AddressId(any.toString) }
+
   case class Response(
-      addressId: Option[String],
+      addressId: Option[AddressId],
       addressType: Option[ResponseAddressType],
       options: List[ResponseOption]
   )
@@ -17,7 +24,7 @@ protected[apiautoaddressie] object FindAddress {
     DeriveJsonDecoder.gen[ResponseAddressType]
 
   case class ResponseOption(
-      addressId: Option[String],
+      addressId: Option[AddressId],
       addressType: Option[ResponseAddressType]
   )
   given JsonDecoder[ResponseOption] = DeriveJsonDecoder.gen[ResponseOption]

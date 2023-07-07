@@ -13,7 +13,7 @@ import ie.nok.ecad.services.apiautoaddressie.customers.Customer
 object ApiAutoAddressIe {
   val live: ZLayer[ZioClient, Throwable, ApiAutoAddressIe] =
     ZLayer.fromFunction(
-      new ApiAutoAddressIe(_, List(AnPostCom, FinderEircodeIe))
+      new ApiAutoAddressIe(_, List(AnPostCom, FinderEircodeIe, QuoteZurichIe))
     )
 }
 
@@ -44,6 +44,7 @@ class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
           addressId
       }
     getEcadDataResponse <- addressIds
+      .map { _.value }
       .map { customer.getEcadDataUrl(apiKey, _) }
       .map { requestBodyAsJson[GetEcadData.Response] }
       .pipe { ZIO.collectAll }
