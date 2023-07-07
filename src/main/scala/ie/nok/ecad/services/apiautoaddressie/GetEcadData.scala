@@ -1,8 +1,8 @@
-package ie.nok.ecad.services.findereircodeie
+package ie.nok.ecad.services.apiautoaddressie
 
 import zio.json.{DeriveJsonDecoder, JsonDecoder}
 
-protected[findereircodeie] object GetEcadData {
+protected[apiautoaddressie] object GetEcadData {
   case class Response(
       eircodeInfo: ResponseEircodeInfo,
       postalAddress: ResponseAddress,
@@ -34,8 +34,5 @@ protected[findereircodeie] object GetEcadData {
   )
   given JsonDecoder[ResponseSpatialInfoEtrs89Location] =
     DeriveJsonDecoder.gen[ResponseSpatialInfoEtrs89Location]
-
-  def url(key: String, addressId: String): String =
-    s"https://api-finder.eircode.ie/Latest/findergetecaddata?key=$key&addressId=$addressId"
 
 }

@@ -1,42 +1,40 @@
-package ie.nok.ecad.services.findereircodeie
+package ie.nok.ecad.services.apiautoaddressie
 
 import ie.nok.http.Client
 import ie.nok.ecad.{EircodeAddressDatabaseData, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
-import ie.nok.ecad.services.findereircodeie.{
-  FindAddress,
-  GetEcadData,
-  GetIdentity
-}
+import ie.nok.ecad.services.apiautoaddressie.customers._
 import scala.util.chaining.scalaUtilChainingOps
 import zio.{ZIO, ZLayer}
 import zio.json.{JsonDecoder, DecoderOps}
 import zio.http.{Client => ZioClient}
+import ie.nok.ecad.services.apiautoaddressie.customers.Customer
 
-object FinderEircodeIe {
-  val live: ZLayer[ZioClient, Throwable, FinderEircodeIe] =
-    ZLayer.fromFunction(new FinderEircodeIe(_))
+object ApiAutoAddressIe {
+  val live: ZLayer[ZioClient, Throwable, ApiAutoAddressIe] =
+    ZLayer.fromFunction(
+      new ApiAutoAddressIe(_, List(AnPostCom, FinderEircodeIe))
+    )
 }
 
-class FinderEircodeIe(client: ZioClient)
+class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
     extends EircodeAddressDatabaseDataService {
 
   private def requestBodyAsJson[A: JsonDecoder](
       url: String
-  ): ZIO[Any, Throwable, A] =
+  ): ZIO[ZioClient, Throwable, A] =
     Client
       .requestBodyAsJson(url)
-      .provide(ZLayer.succeed(client))
 
-  override def getEircodeAddressDatabaseData(
-      eircodeOrAddress: String
-  ): ZIO[Any, Throwable, List[EircodeAddressDatabaseData]] = for {
-    getIdentity <- GetIdentity.url
-      .pipe { requestBodyAsJson[GetIdentity.Response] }
-    findAddress <- FindAddress
-      .url(getIdentity.key, eircodeOrAddress)
+  private def getEircodeAddressDatabaseData(
+      customer: Customer,
+      address: String
+  ): ZIO[ZioClient, Throwable, List[EircodeAddressDatabaseData]] = for {
+    apiKey <- customer.getApiKey
+    findAddressResponse <- customer
+      .getFindAddressUrl(apiKey, address)
       .pipe { requestBodyAsJson[FindAddress.Response] }
-    addressIds = findAddress
+    addressIds = findAddressResponse
       .pipe { case FindAddress.Response(addressId, addressType, options) =>
         FindAddress.ResponseOption(addressId, addressType) +: options
       }
@@ -45,15 +43,12 @@ class FinderEircodeIe(client: ZioClient)
             if addressType.text == "ResidentialAddressPoint" =>
           addressId
       }
-    getEcadData <- addressIds
-      .map {
-        GetEcadData
-          .url(getIdentity.key, _)
-      }
+    getEcadDataResponse <- addressIds
+      .map { customer.getEcadDataUrl(apiKey, _) }
       .map { requestBodyAsJson[GetEcadData.Response] }
       .pipe { ZIO.collectAll }
 
-    res = getEcadData.flatMap { data =>
+    res = getEcadDataResponse.flatMap { data =>
       val eircode = data.eircodeInfo.eircode.patch(3, " ", 0)
       val coordinates = data.spatialInfo.etrs89.location
         .pipe { location =>
@@ -77,4 +72,16 @@ class FinderEircodeIe(client: ZioClient)
       )
     }
   } yield res
+
+  override def getEircodeAddressDatabaseData(
+      address: String
+  ): ZIO[Any, Throwable, List[EircodeAddressDatabaseData]] =
+    customers
+      .map { customer => getEircodeAddressDatabaseData(customer, address) }
+      .pipe {
+        case Nil          => ZIO.fail(new Exception("No customers"))
+        case head :: tail => ZIO.firstSuccessOf(head, tail)
+      }
+      .provide(ZLayer.succeed(client))
+
 }

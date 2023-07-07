@@ -1,9 +1,8 @@
-package ie.nok.ecad.services.findereircodeie
+package ie.nok.ecad.services.apiautoaddressie
 
-import java.net.URLEncoder
 import zio.json.{DeriveJsonDecoder, JsonDecoder}
 
-protected[findereircodeie] object FindAddress {
+protected[apiautoaddressie] object FindAddress {
   case class Response(
       addressId: Option[String],
       addressType: Option[ResponseAddressType],
@@ -22,10 +21,5 @@ protected[findereircodeie] object FindAddress {
       addressType: Option[ResponseAddressType]
   )
   given JsonDecoder[ResponseOption] = DeriveJsonDecoder.gen[ResponseOption]
-
-  def url(key: String, address: String): String = {
-    val urlEncodedAddress = URLEncoder.encode(address, "UTF-8")
-    s"https://api-finder.eircode.ie/Latest/finderfindaddress?key=$key&address=$urlEncodedAddress"
-  }
 
 }
