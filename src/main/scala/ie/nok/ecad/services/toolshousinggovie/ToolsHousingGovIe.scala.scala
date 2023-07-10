@@ -78,14 +78,5 @@ class ToolsHousingGovIe(client: ZioClient)
           )
         }
       }
-      .tap { list =>
-        println(s"ADDRESS: $address")
-        list.foreach { element =>
-          println(s" - ${element.address.mkString(", ")}")
-        }
-        println("")
-
-        ZIO.unit
-      }
 
 }
