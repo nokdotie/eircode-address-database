@@ -89,15 +89,6 @@ class DominosIe(client: Client) extends EircodeAddressDatabaseDataService {
           }
           .pipe { ZIO.collectAll }
           .map { _.flatten }
-          .tap { list =>
-            println(s"ADDRESS: $address")
-            list.foreach { element =>
-              println(s" - ${element.address.mkString(", ")}")
-            }
-            println("")
-
-            ZIO.unit
-          }
 
       }
 }

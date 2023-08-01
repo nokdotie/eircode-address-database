@@ -22,5 +22,13 @@ class EircodeAddressDatabaseDataStoreImpl(
   def getEircodeAddressDatabaseData(
       address: String
   ): ZIO[Any, Throwable, Option[EircodeAddressDatabaseData]] =
-    finderEircodeIe.getEircodeAddressDatabaseData(address).map { _.headOption }
+    finderEircodeIe
+      .getEircodeAddressDatabaseData(address)
+      .tap { list =>
+        println(s"Found for: ${address}")
+        list.foreach { data => println(s"  - ${data}") }
+
+        ZIO.unit
+      }
+      .map { _.headOption }
 }
