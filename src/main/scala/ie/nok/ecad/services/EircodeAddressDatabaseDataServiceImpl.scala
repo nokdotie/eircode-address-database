@@ -21,10 +21,10 @@ object EircodeAddressDatabaseDataServiceImpl {
       DominosIe.live,
       MapsGoogleCom.live,
       ToolsHousingGovIe.live
-    ).pipe { ZLayer.collectAll }
-      .map { env =>
-        new EircodeAddressDatabaseDataServiceImpl(env.get)
-          .pipe { ZEnvironment(_) }
+    )
+      .pipe { ZLayer.collectAll(_) }
+      .andTo {
+        ZLayer.fromFunction { EircodeAddressDatabaseDataServiceImpl(_) }
       }
 
 }
