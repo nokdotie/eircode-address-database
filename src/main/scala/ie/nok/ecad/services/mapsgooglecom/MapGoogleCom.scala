@@ -13,6 +13,7 @@ object MapsGoogleCom {
     System
       .env("GOOGLE_MAPS_API_KEY")
       .someOrFail(
+        // https://console.cloud.google.com/apis/credentials/key/5aada99d-3a47-45c2-93be-ba6f9cd34bc1?project=deed-ie
         new Exception("Environment variable not set: GOOGLE_MAPS_API_KEY")
       )
       .map { apiKey =>
