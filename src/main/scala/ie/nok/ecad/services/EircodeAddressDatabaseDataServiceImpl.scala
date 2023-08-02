@@ -6,24 +6,26 @@ import ie.nok.ecad.services.dominosie.DominosIe
 import ie.nok.ecad.services.mapsgooglecom.MapsGoogleCom
 import ie.nok.ecad.services.toolshousinggovie.ToolsHousingGovIe
 import scala.util.chaining.scalaUtilChainingOps
-import zio.{ZIO, ZLayer}
+import zio.{Scope, ZEnvironment, ZIO, ZLayer}
+import zio.http.Client
 
 object EircodeAddressDatabaseDataServiceImpl {
 
   val live: ZLayer[
-    ApiAutoAddressIe & DominosIe & MapsGoogleCom & ToolsHousingGovIe,
+    Scope & Client,
     Throwable,
     EircodeAddressDatabaseDataService
   ] =
-    ZLayer.fromFunction {
-      (
-          apiAutoAddressIe: ApiAutoAddressIe,
-          mapsGoogleCom: MapsGoogleCom,
-          toolsHousingGovIe: ToolsHousingGovIe
-      ) =>
-        List(apiAutoAddressIe, mapsGoogleCom, toolsHousingGovIe)
-          .pipe { new EircodeAddressDatabaseDataServiceImpl(_) }
-    }
+    List(
+      ApiAutoAddressIe.live,
+      DominosIe.live,
+      MapsGoogleCom.live,
+      ToolsHousingGovIe.live
+    )
+      .pipe { ZLayer.collectAll(_) }
+      .andTo {
+        ZLayer.fromFunction { EircodeAddressDatabaseDataServiceImpl(_) }
+      }
 
 }
 
@@ -49,15 +51,6 @@ class EircodeAddressDatabaseDataServiceImpl(
       }
       .pipe { ZIO.collectAll }
       .map { _.flatten }
-      .tap { list =>
-        println(s"ADDRESS: $address")
-        list.foreach { element =>
-          println(s" - ${element.address.mkString(", ")}")
-        }
-        println("")
-
-        ZIO.unit
-      }
   }
 
 }
