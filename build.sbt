@@ -1,7 +1,7 @@
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneOffset}
 
-val scala3Version = "3.3.0"
+val scala3Version = "3.3.1"
 
 lazy val root = project
   .in(file("."))
