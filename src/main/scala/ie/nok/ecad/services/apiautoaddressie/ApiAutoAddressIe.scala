@@ -1,7 +1,7 @@
 package ie.nok.ecad.services.apiautoaddressie
 
 import ie.nok.http.Client
-import ie.nok.ecad.{EircodeAddressDatabaseData, Coordinates}
+import ie.nok.ecad.{EircodeAddressDatabaseData, Eircode, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
 import ie.nok.ecad.services.apiautoaddressie.customers._
 import scala.util.Random
@@ -53,7 +53,7 @@ class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
       .pipe { ZIO.collectAll }
 
     res = getEcadDataResponse.flatMap { data =>
-      val eircode = data.eircodeInfo.eircode.patch(3, " ", 0)
+      val eircode = Eircode.findFirstIn(data.eircodeInfo.eircode)
       val coordinates = data.spatialInfo.etrs89.location
         .pipe { location =>
           Coordinates(
@@ -65,12 +65,12 @@ class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
       List(
         EircodeAddressDatabaseData(
           eircode = eircode,
-          address = data.postalAddress.english :+ eircode,
+          address = data.postalAddress.english,
           coordinates = coordinates
         ),
         EircodeAddressDatabaseData(
           eircode = eircode,
-          address = data.postalAddress.english :+ eircode,
+          address = data.geographicAddress.english,
           coordinates = coordinates
         )
       )

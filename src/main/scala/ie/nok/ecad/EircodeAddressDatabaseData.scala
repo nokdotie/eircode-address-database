@@ -1,7 +1,7 @@
 package ie.nok.ecad
 
 case class EircodeAddressDatabaseData(
-    eircode: String,
+    eircode: Option[Eircode],
     address: List[String],
     coordinates: Coordinates
 )
