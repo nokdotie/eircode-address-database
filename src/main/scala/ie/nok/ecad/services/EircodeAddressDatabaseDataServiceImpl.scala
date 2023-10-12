@@ -38,7 +38,7 @@ class EircodeAddressDatabaseDataServiceImpl(
   ): ZIO[Any, Throwable, List[EircodeAddressDatabaseData]] = {
     val addresses = List(
       Option(address),
-      Eircode.findFirstIn(address)
+      Eircode.findFirstIn(address).map { _.value }
     ).flatten
 
     val serviceAddressTuple = services.flatMap { service =>

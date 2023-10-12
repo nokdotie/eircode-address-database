@@ -1,7 +1,7 @@
 package ie.nok.ecad.services.dominosie
 
 import ie.nok.http.Client.requestBodyAsJson
-import ie.nok.ecad.{EircodeAddressDatabaseData, Coordinates}
+import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
 import java.net.URLEncoder
 import scala.util.chaining.scalaUtilChainingOps
@@ -80,7 +80,7 @@ class DominosIe(client: Client) extends EircodeAddressDatabaseDataService {
               getEircodeAddressDatabaseData(item.postCode)
             case item =>
               EircodeAddressDatabaseData(
-                eircode = item.postCode,
+                eircode = Eircode.findFirstIn(item.postCode),
                 address = getAddress(item),
                 coordinates = getCoordinates(item).getOrElse { ??? }
               )

@@ -60,7 +60,7 @@ class ToolsHousingGovIe(client: ZioClient)
       .map {
         _.candidates.map { candidate =>
           EircodeAddressDatabaseData(
-            eircode = candidate.attributes.Eircode,
+            eircode = Eircode.findFirstIn(candidate.attributes.Eircode),
             address = List(
               candidate.attributes.Addr_Line_1,
               candidate.attributes.Addr_Line_2,

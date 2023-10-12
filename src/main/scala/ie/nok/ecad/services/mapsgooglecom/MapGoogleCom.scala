@@ -46,8 +46,7 @@ class MapsGoogleCom(context: GeoApiContext)
           .distinctBy { _.formattedAddress }
           .map { result =>
             EircodeAddressDatabaseData(
-              eircode =
-                Eircode.findFirstIn(result.formattedAddress).getOrElse(""),
+              eircode = Eircode.findFirstIn(result.formattedAddress),
               address = result.formattedAddress.split(", ").dropRight(1).toList,
               Coordinates(
                 latitude = result.geometry.location.lat,
