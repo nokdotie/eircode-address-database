@@ -14,7 +14,7 @@ lazy val root = project
       .format(Instant.now()),
     scalaVersion := scala3Version,
     libraryDependencies ++= List(
-      "ie.nok" %% "scala-libraries" % "20231012.185102.393149873",
+      "ie.nok" %% "scala-libraries" % "20230925.163741.873519513",
       "com.google.maps" % "google-maps-services" % "2.2.0",
       "org.scalameta" %% "munit" % "0.7.29" % Test,
       "org.scalameta" %% "munit-scalacheck" % "0.7.29" % Test
