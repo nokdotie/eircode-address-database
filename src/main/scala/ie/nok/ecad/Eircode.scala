@@ -1,6 +1,7 @@
 package ie.nok.ecad
 
 import scala.util.chaining.scalaUtilChainingOps
+import zio.json.{DeriveJsonCodec, JsonCodec}
 
 case class Eircode(value: String) extends AnyVal
 object Eircode {
@@ -34,4 +35,6 @@ object Eircode {
 
     (addressWithoutEircode, eircode.map(sanitize).map(Eircode(_)))
   }
+
+  given JsonCodec[Eircode] = JsonCodec[String].transform(Eircode(_), _.value)
 }
