@@ -1,11 +1,12 @@
 package ie.nok.ecad.services.apiautoaddressie.customers
 
-import ie.nok.http.Client
-import java.net.URLEncoder
-import zio.ZIO
-import zio.json.{JsonDecoder, DeriveJsonDecoder}
-import zio.http.{Client => ZioClient}
 import ie.nok.ecad.services.apiautoaddressie.customers.Customer
+import ie.nok.http.Client
+import zio.ZIO
+import zio.http.Client as ZioClient
+import zio.json.{DeriveJsonDecoder, JsonDecoder}
+
+import java.net.URLEncoder
 
 object FinderEircodeIe extends Customer {
   private case class ResponseGetApiKey(key: String)

@@ -1,14 +1,15 @@
 package ie.nok.ecad.services.apiautoaddressie
 
-import ie.nok.http.Client
-import ie.nok.ecad.{EircodeAddressDatabaseData, Eircode, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
-import ie.nok.ecad.services.apiautoaddressie.customers._
+import ie.nok.ecad.services.apiautoaddressie.customers.*
+import ie.nok.ecad.{Coordinates, Eircode, EircodeAddressDatabaseData}
+import ie.nok.http.Client
+import zio.http.Client as ZioClient
+import zio.json.{DecoderOps, JsonDecoder}
+import zio.{ZIO, ZLayer}
+
 import scala.util.Random
 import scala.util.chaining.scalaUtilChainingOps
-import zio.{ZIO, ZLayer}
-import zio.json.{JsonDecoder, DecoderOps}
-import zio.http.{Client => ZioClient}
 
 object ApiAutoAddressIe {
   val live: ZLayer[ZioClient, Throwable, ApiAutoAddressIe] =
@@ -20,8 +21,7 @@ object ApiAutoAddressIe {
     )
 }
 
-class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
-    extends EircodeAddressDatabaseDataService {
+class ApiAutoAddressIe(client: ZioClient, customers: List[Customer]) extends EircodeAddressDatabaseDataService {
 
   private def requestBodyAsJson[A: JsonDecoder](
       url: String
@@ -42,8 +42,7 @@ class ApiAutoAddressIe(client: ZioClient, customers: List[Customer])
         FindAddress.ResponseOption(addressId, addressType) +: options
       }
       .collect {
-        case FindAddress.ResponseOption(Some(addressId), Some(addressType))
-            if addressType.text == "ResidentialAddressPoint" =>
+        case FindAddress.ResponseOption(Some(addressId), Some(addressType)) if addressType.text == "ResidentialAddressPoint" =>
           addressId
       }
     getEcadDataResponse <- addressIds

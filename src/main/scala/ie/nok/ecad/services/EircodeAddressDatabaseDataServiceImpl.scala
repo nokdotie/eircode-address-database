@@ -1,13 +1,14 @@
 package ie.nok.ecad.services
 
-import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData}
 import ie.nok.ecad.services.apiautoaddressie.ApiAutoAddressIe
 import ie.nok.ecad.services.dominosie.DominosIe
 import ie.nok.ecad.services.mapsgooglecom.MapsGoogleCom
 import ie.nok.ecad.services.toolshousinggovie.ToolsHousingGovIe
-import scala.util.chaining.scalaUtilChainingOps
-import zio.{Scope, ZEnvironment, ZIO, ZLayer}
+import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData}
 import zio.http.Client
+import zio.{Scope, ZEnvironment, ZIO, ZLayer}
+
+import scala.util.chaining.scalaUtilChainingOps
 
 object EircodeAddressDatabaseDataServiceImpl {
 
