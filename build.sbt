@@ -15,7 +15,7 @@ lazy val root = project
     scalaVersion := scala3Version,
     resolvers += Resolver.githubPackages("nokdotie"),
     libraryDependencies ++= List(
-      "ie.nok"         %% "scala-libraries"      % "20231029.200446.985541447",
+      "ie.nok"         %% "scala-libraries"      % "20240104.114944.486313479",
       "com.google.maps" % "google-maps-services" % "2.2.0",
       "org.scalameta"  %% "munit"                % "0.7.29" % Test,
       "org.scalameta"  %% "munit-scalacheck"     % "0.7.29" % Test
