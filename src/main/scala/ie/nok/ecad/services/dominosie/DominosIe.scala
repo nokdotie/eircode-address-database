@@ -1,13 +1,14 @@
 package ie.nok.ecad.services.dominosie
 
-import ie.nok.http.Client.requestBodyAsJson
-import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData, Coordinates}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
+import ie.nok.ecad.{Coordinates, Eircode, EircodeAddressDatabaseData}
+import ie.nok.http.Client.requestBodyAsJson
+import zio.http.Client
+import zio.json.{DeriveJsonDecoder, JsonDecoder}
+import zio.{ZIO, ZLayer}
+
 import java.net.URLEncoder
 import scala.util.chaining.scalaUtilChainingOps
-import zio.{ZIO, ZLayer}
-import zio.json.{JsonDecoder, DeriveJsonDecoder}
-import zio.http.Client
 
 object DominosIe {
 
@@ -82,7 +83,7 @@ class DominosIe(client: Client) extends EircodeAddressDatabaseDataService {
               EircodeAddressDatabaseData(
                 eircode = Eircode.findFirstIn(item.postCode),
                 address = getAddress(item),
-                coordinates = getCoordinates(item).getOrElse { ??? }
+                coordinates = getCoordinates(item).getOrElse { throw new UnsupportedOperationException("Missing coordinates") }
               )
                 .pipe { List(_) }
                 .pipe { ZIO.succeed }

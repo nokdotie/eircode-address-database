@@ -1,10 +1,11 @@
 package ie.nok.ecad.services.apiautoaddressie.customers
 
-import ie.nok.http.Client
-import java.net.URLEncoder
-import zio.ZIO
-import zio.http.{Client => ZioClient}
 import ie.nok.ecad.services.apiautoaddressie.customers.Customer
+import ie.nok.http.Client
+import zio.ZIO
+import zio.http.Client as ZioClient
+
+import java.net.URLEncoder
 
 object QuoteAllianzIe extends Customer {
   override def getApiKey: ZIO[ZioClient, Throwable, String] = {

@@ -1,11 +1,11 @@
 package ie.nok.ecad.services.mapsgooglecom
 
-import com.google.maps.{GeoApiContext, GeocodingApi, GeolocationApi}
-import com.google.maps.model.{AddressComponentType, ComponentFilter}
+import com.google.maps.{GeoApiContext, GeocodingApi}
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
-import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData, Coordinates}
-import scala.util.chaining.scalaUtilChainingOps
+import ie.nok.ecad.{Coordinates, Eircode, EircodeAddressDatabaseData}
 import zio.{Scope, System, ZIO, ZLayer}
+
+import scala.util.chaining.scalaUtilChainingOps
 
 object MapsGoogleCom {
 
@@ -30,8 +30,7 @@ object MapsGoogleCom {
 
 }
 
-class MapsGoogleCom(context: GeoApiContext)
-    extends EircodeAddressDatabaseDataService {
+class MapsGoogleCom(context: GeoApiContext) extends EircodeAddressDatabaseDataService {
 
   override def getEircodeAddressDatabaseData(
       address: String

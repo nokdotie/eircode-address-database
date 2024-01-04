@@ -3,7 +3,7 @@ package ie.nok.ecad
 import scala.util.chaining.scalaUtilChainingOps
 
 class EircodeSuite extends munit.FunSuite {
-  def testEircode(address: String, expected: Option[String]) =
+  def testEircode(address: String, expected: Option[String]): Unit =
     address
       .pipe { Eircode.findFirstIn }
       .map { _.value }
@@ -38,7 +38,7 @@ class EircodeSuite extends munit.FunSuite {
       .pipe { Eircode.unzip }
       .pipe { (address, eircode) =>
         assert(address == "12 THE GREEN, AYRESFIELDS, KILKENNY")
-        assert(eircode == Some(Eircode("R95W7X4")))
+        assert(eircode.contains(Eircode("R95W7X4")))
       }
   }
 }

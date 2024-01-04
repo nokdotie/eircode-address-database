@@ -5,9 +5,10 @@ import ie.nok.ecad.services.dominosie.DominosIe
 import ie.nok.ecad.services.mapsgooglecom.MapsGoogleCom
 import ie.nok.ecad.services.toolshousinggovie.ToolsHousingGovIe
 import ie.nok.zio.ZIO
-import scala.util.chaining.scalaUtilChainingOps
 import zio.Scope
 import zio.http.Client
+
+import scala.util.chaining.scalaUtilChainingOps
 
 class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
   test("Retrieve EircodeAddressDatabaseData from api.autoaddress.ie") {
@@ -18,7 +19,7 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         ApiAutoAddressIe.live,
         EircodeAddressDatabaseDataStoreImpl.live
       )
-      .pipe { ZIO.unsafeRun(_) }
+      .pipe { ZIO.unsafeRun }
       .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
@@ -33,7 +34,7 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         DominosIe.live,
         EircodeAddressDatabaseDataStoreImpl.live
       )
-      .pipe { ZIO.unsafeRun(_) }
+      .pipe { ZIO.unsafeRun }
       .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
@@ -48,7 +49,7 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         MapsGoogleCom.live,
         EircodeAddressDatabaseDataStoreImpl.live
       )
-      .pipe { ZIO.unsafeRun(_) }
+      .pipe { ZIO.unsafeRun }
       .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
@@ -62,7 +63,7 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         ToolsHousingGovIe.live,
         EircodeAddressDatabaseDataStoreImpl.live
       )
-      .pipe { ZIO.unsafeRun(_) }
+      .pipe { ZIO.unsafeRun }
       .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")

@@ -1,8 +1,8 @@
 package ie.nok.ecad.stores
 
 import ie.nok.ecad.EircodeAddressDatabaseData
-import zio.ZIO
 import ie.nok.ecad.stores.EircodeAddressDatabaseDataStore
+import zio.ZIO
 
 trait EircodeAddressDatabaseDataStore {
   def getEircodeAddressDatabaseData(

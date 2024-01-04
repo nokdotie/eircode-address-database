@@ -1,13 +1,13 @@
 package ie.nok.ecad.services.toolshousinggovie
 
-import ie.nok.http.Client
 import ie.nok.ecad.services.EircodeAddressDatabaseDataService
-import ie.nok.ecad.{Eircode, EircodeAddressDatabaseData, Coordinates}
-import java.net.URLEncoder
-import scala.util.chaining.scalaUtilChainingOps
-import zio.{ZIO, ZLayer}
+import ie.nok.ecad.{Coordinates, Eircode, EircodeAddressDatabaseData}
+import ie.nok.http.Client
+import zio.http.Client as ZioClient
 import zio.json.{DeriveJsonDecoder, JsonDecoder}
-import zio.http.{Client => ZioClient}
+import zio.{ZIO, ZLayer}
+
+import java.net.URLEncoder
 
 object ToolsHousingGovIe {
 
@@ -16,8 +16,7 @@ object ToolsHousingGovIe {
 
 }
 
-class ToolsHousingGovIe(client: ZioClient)
-    extends EircodeAddressDatabaseDataService {
+class ToolsHousingGovIe(client: ZioClient) extends EircodeAddressDatabaseDataService {
 
   private case class Response(
       candidates: List[ResponseCandidate]
