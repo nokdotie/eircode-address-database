@@ -20,7 +20,6 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         EircodeAddressDatabaseDataStoreImpl.live
       )
       .pipe { unsafeRun }
-      .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
   }
@@ -35,7 +34,6 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         EircodeAddressDatabaseDataStoreImpl.live
       )
       .pipe { unsafeRun }
-      .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
   }
@@ -50,7 +48,6 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         EircodeAddressDatabaseDataStoreImpl.live
       )
       .pipe { unsafeRun }
-      .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
   }
@@ -64,7 +61,6 @@ class EircodeAddressDatabaseDataStoreImplSuite extends munit.FunSuite {
         EircodeAddressDatabaseDataStoreImpl.live
       )
       .pipe { unsafeRun }
-      .getOrElse { reason => fail(s"Unsafe run failed: $reason") }
 
     assert(result.nonEmpty, "No addresses found")
   }
