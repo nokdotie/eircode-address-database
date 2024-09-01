@@ -20,7 +20,7 @@ lazy val root = project
       "ie.nok"         %% "scala-libraries"      % "20240627.143942.92337699" % "compile->compile;test->test",
       "com.google.maps" % "google-maps-services" % "2.2.0",
       "org.scalameta"  %% "munit"                % "1.0.1"                    % Test,
-      "org.scalameta"  %% "munit-scalacheck"     % "0.7.29"                   % Test
+      "org.scalameta"  %% "munit-scalacheck"     % "1.0.0"                    % Test
     ),
     Test / publishArtifact := true
   )
